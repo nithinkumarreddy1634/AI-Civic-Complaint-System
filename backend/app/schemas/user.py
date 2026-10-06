@@ -21,6 +21,10 @@ class UserResponse(BaseModel):
 
     model_config = {"from_attributes": True}
 
+from typing import Optional
+
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
+    user: Optional[UserResponse] = None
+

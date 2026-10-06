@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: civic-ai-backend
+    env: python
+    region: oregon
+    plan: free
+    branch: main
+    buildCommand: "pip install -r backend/requirements.txt"
+    startCommand: "cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: APP_NAME
+        value: "CivicAI Backend"
+      - key: DEBUG
+        value: "false"
+      - key: ALLOWED_ORIGINS
+        value: "https://frontend-peach-xi-itkvvf8uyv.vercel.app,http://localhost:5173"
+      - key: DATABASE_URL
+        value: "sqlite:///./civicai.db"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: GOOGLE_API_KEY
+        sync: false

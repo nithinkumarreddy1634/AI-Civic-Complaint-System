@@ -31,14 +31,12 @@ bcrypt>=4.0.0                     # Password hashing (direct, no passlib wrapper
 Pillow>=10.0.0                   # Image validation & processing
 
 # ===========================
-# AI & Computer Vision (Phase 3)
+# AI, Computer Vision & Google AI Studio
 # ===========================
-# Uncomment these when ready to train/run models:
-# torch>=2.0.0
-# ultralytics>=8.0.0
-# opencv-python>=4.8.0
-# numpy>=1.24.0
-# scikit-learn>=1.3.0
+opencv-python-headless>=4.8.0
+numpy>=1.24.0
+scikit-learn>=1.3.0
+google-generativeai>=0.8.0
 
 # ===========================
 # Testing

@@ -29,8 +29,16 @@ export const AuthProvider = ({ children }) => {
     const data = await authService.login(email, password);
     localStorage.setItem('token', data.access_token);
     setToken(data.access_token);
-    setUser(data.user);
-    return data;
+    let userData = data.user;
+    if (!userData) {
+      try {
+        userData = await authService.getProfile();
+      } catch (e) {
+        console.error("Failed to load user profile", e);
+      }
+    }
+    setUser(userData);
+    return { ...data, user: userData };
   };
 
   const register = async (name, email, password) => {

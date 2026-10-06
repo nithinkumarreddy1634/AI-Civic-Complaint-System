@@ -33,7 +33,7 @@ const LoginPage = () => {
     setLoading(true);
     try {
       const data = await login(formData.email, formData.password);
-      if (data.user.role === 'admin') {
+      if (data?.user?.role === 'admin') {
         navigate('/admin');
       } else {
         navigate('/complaints');

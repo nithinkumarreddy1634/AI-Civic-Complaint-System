@@ -6,7 +6,7 @@ Endpoints:
     POST /api/auth/login     — Authenticate and receive JWT token
     GET  /api/auth/me        — Get current user profile
 """
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from app.schemas.user import UserRegister, UserResponse, TokenResponse
@@ -31,13 +31,41 @@ def register(user_data: UserRegister, db: Session = Depends(get_db)):
 
 
 @router.post("/login", response_model=TokenResponse)
-def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+async def login(
+    request: Request,
+    db: Session = Depends(get_db)
+):
     """
     Authenticate user with email/password and return a JWT access token.
-
-    Uses OAuth2 password flow — 'username' field accepts email.
+    Supports both JSON body ({"email": "...", "password": "..."}) from web clients
+    and OAuth2 form data from Swagger UI.
     """
-    token = auth_service.authenticate(db, form_data.username, form_data.password)
+    content_type = request.headers.get("content-type", "")
+    username = None
+    password = None
+
+    if "application/json" in content_type:
+        try:
+            body = await request.json()
+            username = body.get("email") or body.get("username")
+            password = body.get("password")
+        except Exception:
+            pass
+    else:
+        try:
+            form = await request.form()
+            username = form.get("username") or form.get("email")
+            password = form.get("password")
+        except Exception:
+            pass
+
+    if not username or not password:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Email and password are required.",
+        )
+
+    token = auth_service.authenticate(db, username, password)
     if not token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

@@ -2,7 +2,7 @@
 Authentication service — handles user registration, login, and token management.
 """
 from sqlalchemy.orm import Session
-from app.schemas.user import UserRegister, TokenResponse
+from app.schemas.user import UserRegister, TokenResponse, UserResponse
 from app.models.user import User
 from app.core.security import hash_password, verify_password, create_access_token
 from app.core.exceptions import ConflictException, UnauthorizedException
@@ -44,7 +44,11 @@ def authenticate(db: Session, email: str, password: str) -> TokenResponse | None
     if not user or not verify_password(password, user.password_hash):
         return None
     access_token = create_access_token(data={"sub": str(user.id)})
-    return TokenResponse(access_token=access_token, token_type="bearer")
+    return TokenResponse(
+        access_token=access_token,
+        token_type="bearer",
+        user=UserResponse.model_validate(user),
+    )
 
 
 def get_user_by_email(db: Session, email: str) -> User | None:

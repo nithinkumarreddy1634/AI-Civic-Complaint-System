@@ -5,7 +5,7 @@ class Settings(BaseSettings):
     APP_NAME: str = 'CivicAI'
     DEBUG: bool = True
     SECRET_KEY: str = 'change_this_to_a_secure_random_string'
-    ALLOWED_ORIGINS: str = 'http://localhost:5173'
+    ALLOWED_ORIGINS: str = 'http://localhost:5173,http://localhost:3000,https://frontend-peach-xi-itkvvf8uyv.vercel.app'
     DATABASE_URL: str = 'sqlite:///./civicai.db'
     JWT_SECRET_KEY: str = 'change_this_to_a_secure_jwt_secret'
     JWT_ALGORITHM: str = 'HS256'
@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     ALLOWED_EXTENSIONS: str = 'jpg,jpeg,png'
     AI_MODEL_PATH: str = './ml/models/best.pt'
     AI_CONFIDENCE_THRESHOLD: float = 0.5
+    GOOGLE_API_KEY: str = ''
 
     model_config = SettingsConfigDict(env_file='.env', extra='ignore')
 
