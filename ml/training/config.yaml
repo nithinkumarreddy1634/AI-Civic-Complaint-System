@@ -1,0 +1,40 @@
+# ============================================
+# CivicAI YOLOv8 Training Configuration
+# ============================================
+
+# Model Architecture
+model:
+  variant: "yolov8n.pt"            # Base pretrained model (yolov8n, yolov8s, yolov8m)
+  weights_dir: "ml/models/pretrained"
+
+# Dataset Settings
+data:
+  yaml_path: "ml/datasets/data.yaml"
+
+# Training Hyperparameters
+training:
+  imgsz: 640                      # Image resolution
+  epochs: 50                      # Maximum training epochs
+  batch: 16                       # Batch size (reduce if GPU OOM occurs)
+  patience: 15                    # Early stopping patience (epochs without improvement)
+  optimizer: "auto"               # Optimizer: auto, SGD, Adam, AdamW
+  lr0: 0.01                       # Initial learning rate
+  lrf: 0.01                       # Final learning rate fraction (lr0 * lrf)
+  momentum: 0.937                 # SGD momentum / Adam beta1
+  weight_decay: 0.0005            # Optimizer weight decay
+  warmup_epochs: 3.0              # Warmup epochs
+  seed: 42                        # Reproducibility seed
+  workers: 4                      # DataLoader worker threads
+  device: "auto"                  # auto (checks cuda then cpu), 0, cpu
+
+# Validation & Checkpointing
+validation:
+  val_split: true                 # Run validation during training
+  save_period: -1                 # Save checkpoint every X epochs (-1 for only best & last)
+  confidence_threshold: 0.25      # Default validation confidence
+  iou_threshold: 0.60             # NMS IoU threshold
+
+# Output Directories
+output:
+  base_dir: "ml/outputs/training"
+  trained_models_dir: "ml/models/trained"

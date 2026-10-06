@@ -1,0 +1,44 @@
+# AI Intelligent Complaint Prioritization Engine Configuration
+version: "v1.0.0"
+
+priority:
+  weights:
+    severity: 0.25
+    safety_risk: 0.25
+    infrastructure_impact: 0.15
+    public_impact: 0.15
+    complaint_frequency: 0.10
+    location_impact: 0.05
+    verification_confidence: 0.05
+
+  thresholds:
+    urgent: 90.0
+    high: 70.0
+    medium: 40.0
+    low: 0.0
+
+  frequency_scaling:
+    # Sublinear saturating mapping: report_count -> frequency_score (0-100)
+    # Prevents duplicate frequency from completely dominating physical hazard severity
+    saturation_cap: 20
+    breakpoints:
+      1: 15.0
+      2: 28.0
+      3: 40.0
+      5: 60.0
+      8: 75.0
+      10: 85.0
+      15: 95.0
+      20: 100.0
+
+  location_impact:
+    # Default baseline score when GPS coordinates exist but no GIS proximity layers are matched
+    default_score: 50.0
+    # Behavior when GPS coordinates are null/missing: 'redistribute' reallocates weight to other available factors
+    missing_gps_behavior: "redistribute"
+
+  escalation:
+    # Boost points per 24 hours of inactivity or unresolved status
+    unresolved_days_boost_per_day: 1.5
+    # Maximum total escalation boost allowed (capped)
+    max_escalation_boost: 20.0

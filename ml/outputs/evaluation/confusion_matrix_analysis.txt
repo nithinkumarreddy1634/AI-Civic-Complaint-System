@@ -1,0 +1,17 @@
+=================================================================
+         CivicAI Confusion Matrix Diagnostic Analysis
+=================================================================
+
+[1] Classes with Low Recall (< 60%):
+  [OK] No classes exhibited critical recall deficiency.
+
+[2] Frequent Class Confusions (> 15% misclassified):
+  [OK] No severe inter-class cross-confusion detected.
+
+[3] Classes with High False Positives (> 40%):
+  [OK] False positive rates are within acceptable tolerances.
+
+[4] Recommendations:
+  * For classes confused with background: collect more diverse negative samples.
+  * For visually similar classes (e.g. pothole vs damaged_road): verify annotation boundary criteria.
+=================================================================

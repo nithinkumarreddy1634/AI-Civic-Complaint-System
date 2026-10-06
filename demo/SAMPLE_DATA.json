@@ -1,0 +1,156 @@
+{
+  "dataset_version": "1.0.0",
+  "disclaimer": "SAMPLE / DEMONSTRATION DATA ONLY. Not real citizen records.",
+  "samples": [
+    {
+      "id": "civ-1024",
+      "code": "#CIV-1024",
+      "category": "pothole",
+      "title": "Severe crater pothole near metro pillar 142",
+      "description": "Deep crater pothole near metro pillar 142 causing major traffic congestion and vehicle tire damage. High accident risk for two-wheelers during peak hours.",
+      "address": "MG Road, Central Junction, Ward 84, Bengaluru",
+      "latitude": 12.9716,
+      "longitude": 77.5946,
+      "image_url": "https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?w=600&auto=format&fit=crop&q=80",
+      "expected_detections": [
+        {
+          "class_name": "pothole",
+          "confidence": 0.914,
+          "bbox": [140, 180, 480, 420]
+        }
+      ],
+      "ground_truth_severity": {
+        "level": "CRITICAL",
+        "score": 84.0,
+        "safety_risk": 90.0,
+        "infrastructure_impact": 80.0,
+        "public_impact": 85.0
+      },
+      "expected_priority": {
+        "level": "URGENT",
+        "score": 87.5
+      },
+      "expected_department": "Roads & Highway Authority"
+    },
+    {
+      "id": "civ-1023",
+      "code": "#CIV-1023",
+      "category": "garbage",
+      "title": "Overflowing commercial waste bin on public pavement",
+      "description": "Commercial garbage bin overflowing onto sidewalk. Debris spilling into storm drain causing severe foul smell and health hazard near food establishments.",
+      "address": "80 Feet Road, Koramangala 4th Block, Bengaluru",
+      "latitude": 12.9352,
+      "longitude": 77.6245,
+      "image_url": "https://images.unsplash.com/photo-1605600659908-0ef719419d41?w=600&auto=format&fit=crop&q=80",
+      "expected_detections": [
+        {
+          "class_name": "garbage",
+          "confidence": 0.926,
+          "bbox": [110, 120, 520, 500]
+        }
+      ],
+      "ground_truth_severity": {
+        "level": "HIGH",
+        "score": 72.0,
+        "safety_risk": 65.0,
+        "infrastructure_impact": 55.0,
+        "public_impact": 88.0
+      },
+      "expected_priority": {
+        "level": "HIGH",
+        "score": 74.0
+      },
+      "expected_department": "Solid Waste Management"
+    },
+    {
+      "id": "civ-1022",
+      "code": "#CIV-1022",
+      "category": "streetlight",
+      "title": "Streetlight pole short-circuit and blacked out stretch",
+      "description": "Entire 200m stretch of residential road is pitch dark due to non-functional sodium streetlamps. Several residents reported safety concerns at night.",
+      "address": "100 Feet Road, Indiranagar, Bengaluru",
+      "latitude": 12.9784,
+      "longitude": 77.6408,
+      "image_url": "https://images.unsplash.com/photo-1509114397022-ed747cca3f65?w=600&auto=format&fit=crop&q=80",
+      "expected_detections": [
+        {
+          "class_name": "streetlight",
+          "confidence": 0.885,
+          "bbox": [220, 60, 410, 480]
+        }
+      ],
+      "ground_truth_severity": {
+        "level": "MEDIUM",
+        "score": 54.0,
+        "safety_risk": 70.0,
+        "infrastructure_impact": 40.0,
+        "public_impact": 52.0
+      },
+      "expected_priority": {
+        "level": "MEDIUM",
+        "score": 58.0
+      },
+      "expected_department": "Electrical & Lighting Dept"
+    },
+    {
+      "id": "civ-1021",
+      "code": "#CIV-1021",
+      "category": "water_leakage",
+      "title": "High-pressure potable water pipeline burst flooding roadway",
+      "description": "Underground main drinking water supply pipe ruptured. High velocity water gushing onto main carriage road, flooding nearby shops and eroding road sub-base.",
+      "address": "14th Main, HSR Layout Sector 2, Bengaluru",
+      "latitude": 12.9121,
+      "longitude": 77.6446,
+      "image_url": "https://images.unsplash.com/photo-1584467735871-8e85353a8413?w=600&auto=format&fit=crop&q=80",
+      "expected_detections": [
+        {
+          "class_name": "water_leakage",
+          "confidence": 0.942,
+          "bbox": [90, 160, 560, 490]
+        }
+      ],
+      "ground_truth_severity": {
+        "level": "CRITICAL",
+        "score": 89.0,
+        "safety_risk": 85.0,
+        "infrastructure_impact": 92.0,
+        "public_impact": 90.0
+      },
+      "expected_priority": {
+        "level": "URGENT",
+        "score": 92.0
+      },
+      "expected_department": "Water Supply & Sewerage Board"
+    },
+    {
+      "id": "civ-1020",
+      "code": "#CIV-1020",
+      "category": "damaged_road",
+      "title": "Structural asphalt subsidence and cracked lane",
+      "description": "Longitudinal asphalt fracture and 4-inch road sinking following utility trenching work. Causes vehicles to swerve abruptly into oncoming lanes.",
+      "address": "Outer Ring Road, Marathahalli Flyover, Bengaluru",
+      "latitude": 12.9591,
+      "longitude": 77.6974,
+      "image_url": "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=600&auto=format&fit=crop&q=80",
+      "expected_detections": [
+        {
+          "class_name": "damaged_road",
+          "confidence": 0.898,
+          "bbox": [80, 200, 580, 460]
+        }
+      ],
+      "ground_truth_severity": {
+        "level": "HIGH",
+        "score": 68.0,
+        "safety_risk": 75.0,
+        "infrastructure_impact": 70.0,
+        "public_impact": 65.0
+      },
+      "expected_priority": {
+        "level": "HIGH",
+        "score": 71.0
+      },
+      "expected_department": "Roads & Highway Authority"
+    }
+  ]
+}

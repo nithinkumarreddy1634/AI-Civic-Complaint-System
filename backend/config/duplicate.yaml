@@ -1,0 +1,43 @@
+# AI Duplicate Complaint Detection Configuration
+version: "v1.0.0"
+
+duplicate:
+  geographic:
+    # Candidate search radius in meters (only search within this bounding box)
+    candidate_radius_meters: 500.0
+    # Radius under which location similarity is very high (close proximity)
+    high_similarity_radius_meters: 50.0
+    # Maximum distance beyond which complaints are considered non-duplicates
+    max_duplicate_distance_meters: 1000.0
+
+  weights:
+    location: 0.30
+    image: 0.35
+    text: 0.20
+    category: 0.15
+
+  # Weights used when geographic coordinates are unavailable
+  no_location_weights:
+    image: 0.50
+    text: 0.30
+    category: 0.20
+
+  thresholds:
+    possible_duplicate: 60.0
+    likely_duplicate: 80.0
+
+  limits:
+    # Maximum candidates retrieved for detailed similarity comparison
+    max_candidates_to_compare: 15
+    # Maximum matching candidates returned in response
+    max_candidates_to_return: 5
+
+  models:
+    image:
+      name: "mobilenet_v3_feature_extractor"
+      version: "v1.0.0"
+      dimension: 512
+    text:
+      name: "semantic_civic_embedder"
+      version: "v1.0.0"
+      dimension: 384

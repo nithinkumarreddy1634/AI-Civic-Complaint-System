@@ -1,0 +1,1 @@
+"""Department recommendation test suite."""

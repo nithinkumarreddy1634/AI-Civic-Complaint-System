@@ -1,0 +1,62 @@
+# Municipal Department Routing Configuration
+version: "v1.0.0"
+
+departments:
+  roads:
+    name: "Roads / Public Works Department"
+    description: "Responsible for road surface repairs, potholes, sidewalks, manhole covers, and vehicular street assets."
+    contact_email: "roads-publicworks@civicai.gov"
+    categories:
+      - pothole
+      - damaged_road
+      - damaged_sidewalk
+      - open_manhole
+    priority_order: 1
+
+  sanitation:
+    name: "Sanitation Department"
+    description: "Responsible for municipal waste collection, garbage accumulation, illegal dumping, and public cleanliness."
+    contact_email: "sanitation-dispatch@civicai.gov"
+    categories:
+      - garbage
+      - garbage_accumulation
+      - illegal_dumping
+    priority_order: 1
+
+  electrical:
+    name: "Electrical / Street Lighting Department"
+    description: "Responsible for streetlights, public electrical hazards, power poles, and lighting infrastructure."
+    contact_email: "streetlighting@civicai.gov"
+    categories:
+      - broken_streetlight
+    priority_order: 1
+
+  water:
+    name: "Water Supply & Sewerage Department"
+    description: "Responsible for municipal water distribution, pipe leakages, main bursts, and drainage lines."
+    contact_email: "watersupply@civicai.gov"
+    categories:
+      - water_leakage
+    priority_order: 1
+
+  horticulture:
+    name: "Horticulture / Municipal Parks Department"
+    description: "Responsible for fallen trees, hazardous branches, municipal park greenery, and vegetative clearance."
+    contact_email: "horticulture@civicai.gov"
+    categories:
+      - fallen_tree
+    priority_order: 1
+
+  public_works:
+    name: "General Public Works / Infrastructure Department"
+    description: "General infrastructure maintenance, bridges, retaining walls, and civic public works."
+    contact_email: "publicworks@civicai.gov"
+    categories:
+      - general_infrastructure
+    priority_order: 2
+
+fallback:
+  code: "manual_review"
+  name: "Manual Review / Triage Team"
+  description: "Special dispatch queue for unclassified, ambiguous, or multi-jurisdictional civic issues."
+  contact_email: "triage-review@civicai.gov"

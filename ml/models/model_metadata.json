@@ -1,0 +1,30 @@
+{
+  "model_name": "civic_yolo_v1",
+  "architecture": "YOLOv8n",
+  "framework": "Ultralytics YOLO (PyTorch)",
+  "dataset_version": "v1",
+  "num_classes": 9,
+  "classes": [
+    "pothole",
+    "garbage",
+    "open_manhole",
+    "damaged_road",
+    "broken_streetlight",
+    "water_leakage",
+    "damaged_sidewalk",
+    "fallen_tree",
+    "illegal_dumping"
+  ],
+  "background_classes": [
+    "normal"
+  ],
+  "input_resolution": [640, 640],
+  "confidence_threshold": 0.40,
+  "iou_threshold": 0.50,
+  "weights": {
+    "pytorch": "ml/models/trained/civic_yolo_best.pt",
+    "onnx": "ml/models/trained/civic_yolo_v1.onnx"
+  },
+  "training_run": "experiment_001",
+  "license": "Academic / Final Year B.Tech Project"
+}

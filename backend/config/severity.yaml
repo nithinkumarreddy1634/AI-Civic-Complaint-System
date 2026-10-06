@@ -1,0 +1,97 @@
+# AI Severity Assessment and Damage Impact Configuration
+version: "v1.0.0"
+
+severity:
+  thresholds:
+    low: 0.0
+    medium: 40.0
+    high: 70.0
+    critical: 90.0
+
+  weights:
+    damage_extent: 0.20
+    detection_confidence: 0.10
+    safety_risk: 0.30
+    infrastructure_impact: 0.20
+    public_impact: 0.20
+
+  damage_extent:
+    # Reference ratio of bbox area to image area considered full visual impact (15% coverage)
+    max_reference_ratio: 0.15
+    min_score: 5.0
+    max_score: 100.0
+
+  multi_detection:
+    # Diminishing marginal weight for subsequent detections after the primary detection
+    subsequent_weight_factor: 0.30
+
+  categories:
+    pothole:
+      safety_hazard_base: 65.0
+      infrastructure_base: 70.0
+      public_impact_base: 60.0
+      obstruction_multiplier: 1.2
+      disclaimer: "Bounding box area approximates 2D surface disruption; physical depth is not estimated."
+
+    garbage:
+      safety_hazard_base: 40.0
+      infrastructure_base: 50.0
+      public_impact_base: 65.0
+      obstruction_multiplier: 1.1
+      disclaimer: "Assesses visible waste accumulation area; does not infer biochemical contamination."
+
+    open_manhole:
+      safety_hazard_base: 90.0
+      infrastructure_base: 75.0
+      public_impact_base: 80.0
+      obstruction_multiplier: 1.3
+      disclaimer: "Open manholes present immediate drop hazards in public access areas."
+
+    damaged_road:
+      safety_hazard_base: 65.0
+      infrastructure_base: 80.0
+      public_impact_base: 70.0
+      obstruction_multiplier: 1.25
+      disclaimer: "Assesses visible structural roadway fracturing and asphalt degradation."
+
+    broken_streetlight:
+      safety_hazard_base: 50.0
+      infrastructure_base: 60.0
+      public_impact_base: 55.0
+      obstruction_multiplier: 1.0
+      disclaimer: "Identifies loss of roadway illumination infrastructure; does not confirm crime incidence."
+
+    water_leakage:
+      safety_hazard_base: 55.0
+      infrastructure_base: 75.0
+      public_impact_base: 65.0
+      obstruction_multiplier: 1.15
+      disclaimer: "Assesses visible pooling scale; does not speculate on potable water contamination."
+
+    damaged_sidewalk:
+      safety_hazard_base: 55.0
+      infrastructure_base: 65.0
+      public_impact_base: 60.0
+      obstruction_multiplier: 1.1
+      disclaimer: "Evaluates pedestrian walkway surface discontinuity and tripping hazard proxies."
+
+    fallen_tree:
+      safety_hazard_base: 85.0
+      infrastructure_base: 75.0
+      public_impact_base: 85.0
+      obstruction_multiplier: 1.4
+      disclaimer: "Evaluates physical transit blocking scale and utility interference."
+
+    illegal_dumping:
+      safety_hazard_base: 45.0
+      infrastructure_base: 55.0
+      public_impact_base: 70.0
+      obstruction_multiplier: 1.15
+      disclaimer: "Identifies civic waste accumulation; makes no accusation regarding responsible parties."
+
+    other:
+      safety_hazard_base: 50.0
+      infrastructure_base: 50.0
+      public_impact_base: 50.0
+      obstruction_multiplier: 1.0
+      disclaimer: "General civic defect baseline."

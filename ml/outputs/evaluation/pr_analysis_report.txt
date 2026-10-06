@@ -1,0 +1,16 @@
+=================================================================
+     CivicAI Confidence Threshold & Operating Point Analysis
+=================================================================
+Threshold  | Precision  | Recall     | F1-Score   | Trade-off Note      
+-----------------------------------------------------------------
+0.30       | 0.734      | 0.820      | 0.775      | High Recall (More FP)
+0.40       | 0.768      | 0.767      | 0.767      | Balanced            
+0.50       | 0.801      | 0.711      | 0.753      | Balanced            
+0.60       | 0.833      | 0.652      | 0.731      | High Precision (More FN)
+0.70       | 0.863      | 0.592      | 0.702      | High Precision (More FN)
+-----------------------------------------------------------------
+Operational Guidelines for Civic Complaint Verification:
+1. Low Threshold (0.30 - 0.35): Use when missing a critical danger (open manholes, fallen trees) is catastrophic.
+2. Balanced Threshold (0.40 - 0.50): Recommended default for automated routing without overwhelming municipal officers.
+3. High Threshold (0.60+): Use when auto-approving repair workorders without human verification.
+=================================================================
