@@ -1,22 +1,19 @@
-import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import React, { useEffect } from 'react';
 import useAuth from '../../hooks/useAuth';
 import LoadingSpinner from './LoadingSpinner';
 
 const ProtectedRoute = ({ children, roles = [] }) => {
-  const { user, loading } = useAuth();
-  const location = useLocation();
+  const { loading, switchRole, activeRole } = useAuth();
+
+  useEffect(() => {
+    // If the route specifically needs admin role and active role isn't admin, switch to admin automatically
+    if (roles.includes('admin') && activeRole !== 'admin') {
+      switchRole('admin');
+    }
+  }, [roles, activeRole, switchRole]);
 
   if (loading) {
     return <LoadingSpinner fullScreen />;
-  }
-
-  if (!user) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-
-  if (roles.length > 0 && !roles.includes(user.role)) {
-    return <Navigate to="/" replace />;
   }
 
   return children;

@@ -31,41 +31,25 @@ const HomePage = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row justify-center items-center gap-4 pt-4">
-            {!user && (
-              <>
-                <Link
-                  to="/register"
-                  className="w-full sm:w-auto px-7 py-3.5 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl shadow-lg shadow-purple-600/30 transition-all text-sm flex items-center justify-center gap-2"
-                >
-                  <span>Submit a Complaint</span>
-                  <ArrowRight size={16} />
-                </Link>
-                <Link
-                  to="/login"
-                  className="w-full sm:w-auto px-7 py-3.5 bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 border border-slate-700 font-semibold rounded-xl transition text-sm flex items-center justify-center gap-2"
-                >
-                  <span>Admin & Citizen Login</span>
-                </Link>
-              </>
-            )}
-            {isCitizen && (
-              <Link
-                to="/complaints/new"
-                className="px-7 py-3.5 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl shadow-lg shadow-purple-600/30 transition text-sm flex items-center gap-2"
-              >
-                <span>Submit a Complaint</span>
-                <ArrowRight size={16} />
-              </Link>
-            )}
-            {isAdmin && (
-              <Link
-                to="/admin"
-                className="px-7 py-3.5 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl shadow-lg shadow-purple-600/30 transition text-sm flex items-center gap-2"
-              >
-                <span>Go to Admin Dashboard</span>
-                <ArrowRight size={16} />
-              </Link>
-            )}
+            <Link
+              to="/complaints/new"
+              className="w-full sm:w-auto px-7 py-3.5 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl shadow-lg shadow-purple-600/30 transition-all text-sm flex items-center justify-center gap-2"
+            >
+              <span>Submit a Complaint</span>
+              <ArrowRight size={16} />
+            </Link>
+            <Link
+              to="/complaints"
+              className="w-full sm:w-auto px-7 py-3.5 bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 border border-slate-700 font-semibold rounded-xl transition text-sm flex items-center justify-center gap-2"
+            >
+              <span>My Complaints</span>
+            </Link>
+            <Link
+              to="/admin"
+              className="w-full sm:w-auto px-7 py-3.5 bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 font-semibold rounded-xl transition text-sm flex items-center justify-center gap-2"
+            >
+              <span>Admin Console</span>
+            </Link>
           </div>
         </div>
       </section>

@@ -23,9 +23,16 @@ import {
 import useAuth from '../hooks/useAuth';
 
 const AdminLayout = () => {
-  const { logout, user } = useAuth();
+  const { user, switchRole } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+
+  const handleExitAdmin = async () => {
+    if (switchRole) {
+      await switchRole('citizen');
+    }
+    navigate('/');
+  };
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(true);
@@ -162,18 +169,18 @@ const AdminLayout = () => {
                 </div>
               </div>
               <button
-                onClick={logout}
-                title="Logout"
-                className="text-slate-400 hover:text-rose-400 p-1.5 rounded-lg hover:bg-slate-800 transition-colors shrink-0"
+                onClick={handleExitAdmin}
+                title="Return to Public Portal (Citizen Mode)"
+                className="text-slate-400 hover:text-purple-300 p-1.5 rounded-lg hover:bg-slate-800 transition-colors shrink-0"
               >
                 <LogOut size={16} />
               </button>
             </div>
           ) : (
             <button
-              onClick={logout}
-              title="Logout"
-              className="w-full flex justify-center py-2 text-slate-400 hover:text-rose-400 transition-colors"
+              onClick={handleExitAdmin}
+              title="Return to Public Portal (Citizen Mode)"
+              className="w-full flex justify-center py-2 text-slate-400 hover:text-purple-300 transition-colors"
             >
               <LogOut size={20} />
             </button>

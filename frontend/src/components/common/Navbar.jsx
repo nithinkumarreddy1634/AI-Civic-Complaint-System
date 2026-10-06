@@ -1,16 +1,21 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Menu, X, Shield, PlusCircle, LayoutDashboard, AlertCircle, LogOut } from 'lucide-react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Menu, X, Shield, PlusCircle, LayoutDashboard, UserCheck, ShieldAlert, Sparkles } from 'lucide-react';
 import useAuth from '../../hooks/useAuth';
 
 const Navbar = () => {
-  const { user, logout, isAdmin, isCitizen } = useAuth();
+  const { user, activeRole, switchRole, isAdmin } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleLogout = () => {
-    logout();
-    navigate('/');
+  const handleRoleToggle = async (newRole) => {
+    await switchRole(newRole);
+    if (newRole === 'admin' && !location.pathname.startsWith('/admin')) {
+      navigate('/admin');
+    } else if (newRole === 'citizen' && location.pathname.startsWith('/admin')) {
+      navigate('/complaints');
+    }
   };
 
   return (
@@ -34,61 +39,67 @@ const Navbar = () => {
               Home
             </Link>
 
-            {isCitizen && (
-              <>
-                <Link
-                  to="/complaints/new"
-                  className="flex items-center gap-1.5 text-purple-400 hover:text-purple-300 font-medium transition-colors"
-                >
-                  <PlusCircle size={16} />
-                  <span>Submit Complaint</span>
-                </Link>
-                <Link to="/complaints" className="text-slate-300 hover:text-white font-medium transition-colors">
-                  My Complaints
-                </Link>
-              </>
-            )}
+            <Link
+              to="/complaints/new"
+              className="flex items-center gap-1.5 text-purple-400 hover:text-purple-300 font-medium transition-colors"
+            >
+              <PlusCircle size={16} />
+              <span>Submit Complaint</span>
+            </Link>
 
-            {isAdmin && (
-              <Link
-                to="/admin"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-600/20 text-purple-300 border border-purple-500/30 hover:bg-purple-600/30 font-medium transition-colors"
-              >
-                <LayoutDashboard size={15} />
-                <span>Admin Console</span>
-              </Link>
-            )}
+            <Link to="/complaints" className="text-slate-300 hover:text-white font-medium transition-colors">
+              My Complaints
+            </Link>
 
-            {user ? (
-              <div className="flex items-center gap-3 pl-2 border-l border-slate-800">
-                <div className="text-right">
-                  <span className="text-xs font-semibold text-slate-200 block">{user.name}</span>
-                  <span className="text-[10px] text-slate-400 block uppercase tracking-wider">{user.role}</span>
-                </div>
+            <Link
+              to="/admin"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-600/20 text-purple-300 border border-purple-500/30 hover:bg-purple-600/30 font-medium transition-colors"
+            >
+              <LayoutDashboard size={15} />
+              <span>Admin Console</span>
+            </Link>
+
+            {/* Seamless Role Switcher (Zero Auth Page) */}
+            <div className="flex items-center gap-2 pl-3 border-l border-slate-800">
+              <div className="bg-slate-900/90 border border-slate-800 p-1 rounded-xl flex items-center gap-1 shadow-inner">
                 <button
-                  onClick={handleLogout}
-                  className="p-2 text-slate-400 hover:text-rose-400 hover:bg-slate-800/80 rounded-lg transition-colors"
-                  title="Logout"
+                  type="button"
+                  onClick={() => handleRoleToggle('citizen')}
+                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
+                    activeRole !== 'admin'
+                      ? 'bg-purple-600 text-white shadow-md shadow-purple-600/30'
+                      : 'text-slate-400 hover:text-slate-200'
+                  }`}
+                  title="Switch to Citizen View"
                 >
-                  <LogOut size={16} />
+                  <UserCheck size={13} />
+                  <span>Citizen</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleRoleToggle('admin')}
+                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
+                    activeRole === 'admin'
+                      ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                      : 'text-slate-400 hover:text-slate-200'
+                  }`}
+                  title="Switch to Admin View"
+                >
+                  <ShieldAlert size={13} />
+                  <span>Admin</span>
                 </button>
               </div>
-            ) : (
-              <div className="flex items-center gap-3">
-                <Link
-                  to="/login"
-                  className="text-slate-300 hover:text-white font-medium px-3 py-1.5 rounded-lg hover:bg-slate-800 transition-colors"
-                >
-                  Login
-                </Link>
-                <Link
-                  to="/register"
-                  className="px-4 py-2 text-xs font-semibold text-white bg-purple-600 hover:bg-purple-500 rounded-xl shadow-lg shadow-purple-600/30 transition-all"
-                >
-                  Register
-                </Link>
+
+              {/* Persona Tag */}
+              <div className="text-right hidden lg:block pl-1">
+                <span className="text-xs font-medium text-slate-200 block leading-tight">
+                  {user?.name || (activeRole === 'admin' ? 'Admin User' : 'Citizen')}
+                </span>
+                <span className="text-[10px] text-emerald-400 font-semibold tracking-wider uppercase block">
+                  ● Active
+                </span>
               </div>
-            )}
+            </div>
           </div>
 
           {/* Mobile Menu Button */}
@@ -113,58 +124,64 @@ const Navbar = () => {
           >
             Home
           </Link>
-          {isCitizen && (
-            <>
-              <Link
-                to="/complaints/new"
-                onClick={() => setIsOpen(false)}
-                className="block px-3 py-2 rounded-lg text-sm text-purple-400 hover:bg-slate-800"
-              >
-                Submit Complaint
-              </Link>
-              <Link
-                to="/complaints"
-                onClick={() => setIsOpen(false)}
-                className="block px-3 py-2 rounded-lg text-sm text-slate-300 hover:bg-slate-800"
-              >
-                My Complaints
-              </Link>
-            </>
-          )}
-          {isAdmin && (
-            <Link
-              to="/admin"
-              onClick={() => setIsOpen(false)}
-              className="block px-3 py-2 rounded-lg text-sm text-purple-300 hover:bg-slate-800 font-semibold"
-            >
-              Admin Dashboard
-            </Link>
-          )}
-          {user ? (
+          <Link
+            to="/complaints/new"
+            onClick={() => setIsOpen(false)}
+            className="block px-3 py-2 rounded-lg text-sm text-purple-400 hover:bg-slate-800 font-medium"
+          >
+            Submit Complaint
+          </Link>
+          <Link
+            to="/complaints"
+            onClick={() => setIsOpen(false)}
+            className="block px-3 py-2 rounded-lg text-sm text-slate-300 hover:bg-slate-800"
+          >
+            My Complaints
+          </Link>
+          <Link
+            to="/admin"
+            onClick={() => {
+              handleRoleToggle('admin');
+              setIsOpen(false);
+            }}
+            className="block px-3 py-2 rounded-lg text-sm text-purple-300 hover:bg-slate-800 font-semibold"
+          >
+            Admin Dashboard
+          </Link>
+
+          {/* Mobile Role Switcher */}
+          <div className="pt-2 border-t border-slate-800/80 flex gap-2">
             <button
-              onClick={handleLogout}
-              className="block w-full text-left px-3 py-2 rounded-lg text-sm text-rose-400 hover:bg-slate-800"
+              type="button"
+              onClick={() => {
+                handleRoleToggle('citizen');
+                setIsOpen(false);
+              }}
+              className={`flex-1 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 ${
+                activeRole !== 'admin'
+                  ? 'bg-purple-600 text-white'
+                  : 'bg-slate-800 text-slate-300'
+              }`}
             >
-              Logout ({user.name})
+              <UserCheck size={14} />
+              <span>Citizen View</span>
             </button>
-          ) : (
-            <div className="pt-2 flex gap-2">
-              <Link
-                to="/login"
-                onClick={() => setIsOpen(false)}
-                className="flex-1 text-center py-2 rounded-lg bg-slate-800 text-sm text-slate-200"
-              >
-                Login
-              </Link>
-              <Link
-                to="/register"
-                onClick={() => setIsOpen(false)}
-                className="flex-1 text-center py-2 rounded-lg bg-purple-600 text-sm text-white font-semibold"
-              >
-                Register
-              </Link>
-            </div>
-          )}
+            <button
+              type="button"
+              onClick={() => {
+                handleRoleToggle('admin');
+                setIsOpen(false);
+              }}
+              className={`flex-1 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 ${
+                activeRole === 'admin'
+                  ? 'bg-indigo-600 text-white'
+                  : 'bg-slate-800 text-slate-300'
+              }`}
+            >
+              <ShieldAlert size={14} />
+              <span>Admin View</span>
+            </button>
+          </div>
         </div>
       )}
     </nav>

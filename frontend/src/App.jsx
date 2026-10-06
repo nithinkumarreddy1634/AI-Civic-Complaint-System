@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import MainLayout from './layouts/MainLayout';
 import AdminLayout from './layouts/AdminLayout';
@@ -7,8 +7,6 @@ import ProtectedRoute from './components/common/ProtectedRoute';
 
 // Public / Citizen Pages
 import HomePage from './pages/HomePage';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
 import SubmitComplaintPage from './pages/SubmitComplaintPage';
 import MyComplaintsPage from './pages/MyComplaintsPage';
 import ComplaintDetailPage from './pages/ComplaintDetailPage';
@@ -28,10 +26,12 @@ function App() {
         {/* ── Public / Citizen Routes (inside MainLayout) ─────────────── */}
         <Route path="/" element={<MainLayout />}>
           <Route index element={<HomePage />} />
-          <Route path="login" element={<LoginPage />} />
-          <Route path="register" element={<RegisterPage />} />
+          
+          {/* Legacy auth route redirects */}
+          <Route path="login" element={<Navigate to="/" replace />} />
+          <Route path="register" element={<Navigate to="/complaints/new" replace />} />
 
-          {/* Protected Citizen Routes */}
+          {/* Citizen Routes */}
           <Route
             path="complaints"
             element={
