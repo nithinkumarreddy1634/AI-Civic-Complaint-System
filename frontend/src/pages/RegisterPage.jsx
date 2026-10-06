@@ -41,7 +41,13 @@ const RegisterPage = () => {
       await register(formData.name, formData.email, formData.password);
       navigate('/login', { state: { message: 'Registration successful! Please login.' } });
     } catch (error) {
-      setApiError(error.response?.data?.detail || 'Registration failed. Please try again.');
+      const detail = error.response?.data?.detail;
+      const msg = typeof detail === 'string'
+        ? detail
+        : Array.isArray(detail)
+        ? detail.map((d) => d.msg || d.message || JSON.stringify(d)).join(', ')
+        : (detail?.message || 'Registration failed. Please try again.');
+      setApiError(msg);
     } finally {
       setLoading(false);
     }

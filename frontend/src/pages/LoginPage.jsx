@@ -39,7 +39,13 @@ const LoginPage = () => {
         navigate('/complaints');
       }
     } catch (error) {
-      setApiError(error.response?.data?.detail || 'Login failed. Please check your credentials.');
+      const detail = error.response?.data?.detail;
+      const msg = typeof detail === 'string'
+        ? detail
+        : Array.isArray(detail)
+        ? detail.map((d) => d.msg || d.message || JSON.stringify(d)).join(', ')
+        : (detail?.message || 'Login failed. Please check your credentials.');
+      setApiError(msg);
     } finally {
       setLoading(false);
     }
