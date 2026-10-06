@@ -3,11 +3,7 @@ import { API_ENDPOINTS } from '../utils/constants';
 
 const complaintService = {
   submitComplaint: async (formData) => {
-    const response = await api.post(API_ENDPOINTS.COMPLAINTS.BASE, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+    const response = await api.post(API_ENDPOINTS.COMPLAINTS.BASE, formData);
     return response.data;
   },
 
