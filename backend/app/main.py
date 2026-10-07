@@ -9,9 +9,17 @@ This module creates and configures the FastAPI application with:
 - Health and readiness probes
 """
 import os
+import sys
 import time
 import uuid
 import logging
+from pathlib import Path
+
+# Ensure repository root is on sys.path for ml package discovery
+_REPO_ROOT = str(Path(__file__).resolve().parent.parent.parent)
+if _REPO_ROOT not in sys.path:
+    sys.path.insert(0, _REPO_ROOT)
+
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware

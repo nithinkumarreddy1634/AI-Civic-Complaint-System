@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 1440
     UPLOAD_DIR: str = './uploads'
     MAX_FILE_SIZE_MB: int = 10
-    ALLOWED_EXTENSIONS: str = 'jpg,jpeg,png'
+    ALLOWED_EXTENSIONS: str = 'jpg,jpeg,png,webp'
     AI_MODEL_PATH: str = './ml/models/best.pt'
     AI_CONFIDENCE_THRESHOLD: float = 0.5
     GOOGLE_API_KEY: str = ''

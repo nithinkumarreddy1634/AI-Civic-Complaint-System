@@ -48,6 +48,7 @@ desktop.ini
 
 # Project-specific
 uploads/
+*.pt
 ml/models/*.pt
 ml/datasets/
 *.db

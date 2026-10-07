@@ -20,6 +20,7 @@ from typing import Tuple
 _MIME_SIGNATURES = {
     b"\xff\xd8\xff": "image/jpeg",
     b"\x89PNG\r\n\x1a\n": "image/png",
+    b"RIFF": "image/webp",
 }
 
 
@@ -68,13 +69,18 @@ async def validate_and_save_image(file: UploadFile, settings) -> Tuple[str, str]
             detail=f"File size ({len(content)} bytes) exceeds maximum ({settings.MAX_FILE_SIZE_MB} MB)",
         )
 
-    # 3. Validate MIME type via file header bytes
+    # 3. Validate MIME type via file header bytes or PIL fallback
     detected_mime = _detect_mime_type(content)
-    if detected_mime not in ("image/jpeg", "image/png"):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid file type. Only JPEG and PNG images are accepted.",
-        )
+    if detected_mime not in ("image/jpeg", "image/png", "image/webp"):
+        try:
+            test_img = Image.open(BytesIO(content))
+            if test_img.format not in ("JPEG", "PNG", "WEBP"):
+                raise ValueError("Unsupported format")
+        except Exception:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid file type. Only JPEG, PNG, and WebP images are accepted.",
+            )
 
     # 4. Validate image integrity (not corrupted)
     try:

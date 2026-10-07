@@ -36,14 +36,16 @@ const SubmitComplaintPage = () => {
       setSuccess(true);
     } catch (err) {
       console.error('Error submitting complaint:', err);
-      const detail = err.response?.data?.detail;
-      setError(
-        typeof detail === 'string'
-          ? detail
-          : Array.isArray(detail)
-          ? detail.map((d) => d.msg || d.message).join(', ')
-          : 'An error occurred while submitting your complaint. Please verify your input and try again.'
-      );
+      const detail = err.response?.data?.detail || err.response?.data?.error?.message || err.response?.data?.message;
+      let errorMsg = 'An error occurred while submitting your complaint. Please verify your input and try again.';
+      if (typeof detail === 'string') {
+        errorMsg = detail;
+      } else if (Array.isArray(detail)) {
+        errorMsg = detail.map((d) => (typeof d === 'string' ? d : d.msg || d.message || JSON.stringify(d))).join(', ');
+      } else if (err.message) {
+        errorMsg = `${err.message}. Please check your connection to the server.`;
+      }
+      setError(errorMsg);
     } finally {
       setIsSubmitting(false);
     }

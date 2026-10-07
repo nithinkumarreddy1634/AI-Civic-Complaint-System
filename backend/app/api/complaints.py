@@ -23,7 +23,7 @@ from app.schemas.complaint import (
 )
 from app.services import complaint_service, image_service
 from app.services.complaint_processing_service import complaint_processing_service
-from app.api.deps import get_current_user
+from app.api.deps import get_current_user, get_current_user_or_default
 from app.database.session import get_db
 from app.config import get_settings
 from app.models.user import User
@@ -37,6 +37,7 @@ router = APIRouter()
 settings = get_settings()
 
 
+@router.post("", response_model=ComplaintCreateResponse, status_code=status.HTTP_201_CREATED)
 @router.post("/", response_model=ComplaintCreateResponse, status_code=status.HTTP_201_CREATED)
 async def create_complaint(
     background_tasks: BackgroundTasks,
@@ -47,7 +48,7 @@ async def create_complaint(
     address: Optional[str] = Form(None, description="Human-readable address"),
     image: UploadFile = File(..., description="Photo of the infrastructure issue"),
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_user_or_default),
 ):
     """
     Submit a new civic infrastructure complaint.
@@ -69,8 +70,33 @@ async def create_complaint(
         image, settings
     )
 
+    # Normalize category gracefully to prevent enum validation crashes
+    from app.schemas.complaint import ComplaintCategory
+    cat_str = category.lower().strip().replace(" ", "_")
+    try:
+        valid_cat = ComplaintCategory(cat_str)
+    except ValueError:
+        if "street" in cat_str or "light" in cat_str:
+            valid_cat = ComplaintCategory.STREETLIGHT
+        elif "dump" in cat_str or "garbage" in cat_str or "waste" in cat_str:
+            valid_cat = ComplaintCategory.GARBAGE
+        elif "hole" in cat_str:
+            valid_cat = ComplaintCategory.POTHOLE
+        elif "water" in cat_str or "leak" in cat_str:
+            valid_cat = ComplaintCategory.WATER_LEAKAGE
+        elif "road" in cat_str:
+            valid_cat = ComplaintCategory.DAMAGED_ROAD
+        elif "manhole" in cat_str:
+            valid_cat = ComplaintCategory.MANHOLE
+        elif "sidewalk" in cat_str or "footpath" in cat_str:
+            valid_cat = ComplaintCategory.SIDEWALK
+        elif "tree" in cat_str:
+            valid_cat = ComplaintCategory.TREE
+        else:
+            valid_cat = ComplaintCategory.OTHER
+
     complaint_data = ComplaintCreate(
-        category=category,
+        category=valid_cat,
         description=description,
         latitude=latitude,
         longitude=longitude,
@@ -92,6 +118,7 @@ async def create_complaint(
     )
 
 
+@router.get("", response_model=list[ComplaintListResponse])
 @router.get("/", response_model=list[ComplaintListResponse])
 def get_user_complaints(
     status: Optional[str] = None,
@@ -99,7 +126,7 @@ def get_user_complaints(
     page: int = 1,
     limit: int = 20,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_user_or_default),
 ):
     """List the current citizen's own complaints with optional filtering."""
     return complaint_service.get_user_complaints(
@@ -111,27 +138,25 @@ def get_user_complaints(
 def get_complaint(
     complaint_id: uuid.UUID,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_user_or_default),
 ):
     """
     Get full complaint detail including all AI analysis results.
-    Citizens can view their own complaints; admins can view any.
+    Allows citizens and tracking of complaints via reference ID.
     """
     complaint = complaint_service.get_complaint(db, complaint_id)
     if not complaint:
         raise HTTPException(status_code=404, detail="Complaint not found")
 
-    if current_user.role != "admin" and complaint.user_id != current_user.id:
-        raise HTTPException(status_code=403, detail="Not authorized to access this complaint")
-
-    return complaint_service.build_complaint_dict(complaint, db, is_admin=(current_user.role == "admin"))
+    is_admin = current_user.role == "admin"
+    return complaint_service.build_complaint_dict(complaint, db, is_admin=is_admin)
 
 
 @router.get("/{complaint_id}/processing-status", response_model=ProcessingStatusResponse)
 def get_processing_status(
     complaint_id: uuid.UUID,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_user_or_default),
 ):
     """
     Retrieve real-time AI processing progress and current stage.

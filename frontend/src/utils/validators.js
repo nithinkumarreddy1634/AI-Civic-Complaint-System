@@ -12,9 +12,9 @@ export const validatePassword = (password) => {
 export const validateImage = (file) => {
   if (!file) return { valid: false, message: 'Image is required' };
   
-  const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-  if (!validTypes.includes(file.type)) {
-    return { valid: false, message: 'Only JPG, JPEG and PNG files are allowed' };
+  const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+  if (file.type && !validTypes.includes(file.type)) {
+    return { valid: false, message: 'Only JPG, JPEG, PNG, and WebP files are allowed' };
   }
   
   const maxSize = 10 * 1024 * 1024; // 10MB
