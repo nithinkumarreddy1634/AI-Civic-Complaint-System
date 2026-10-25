@@ -61,13 +61,13 @@ export const AuthProvider = ({ children }) => {
     initSession();
   }, [autoLoginRole, token]);
 
-  const switchRole = async (targetRole) => {
+  const switchRole = useCallback(async (targetRole) => {
     setLoading(true);
     const validRole = targetRole === 'admin' ? 'admin' : 'citizen';
     const profile = await autoLoginRole(validRole);
     setLoading(false);
     return profile;
-  };
+  }, [autoLoginRole]);
 
   const login = async (email, password) => {
     const data = await authService.login(email, password);

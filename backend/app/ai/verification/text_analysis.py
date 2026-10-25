@@ -10,6 +10,8 @@ from typing import List, Dict, Any, Set
 CIVIC_KEYWORD_PATTERNS: Dict[str, List[str]] = {
     "pothole": [
         r"\bpotholes?\b",
+        r"\bpatholes?\b",
+        r".*p[ao]thole.*",
         r"\bhole(s)? in (the )?road\b",
         r"\broad crater\b",
         r"\bpit(s)?\b",

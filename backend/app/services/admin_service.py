@@ -50,17 +50,43 @@ def get_dashboard_stats(db: Session) -> DashboardStats:
 
 def get_analytics(db: Session) -> AnalyticsData:
     """Get analytics metrics for charts and administrative reporting."""
+    from app.models.severity import SeverityAnalysis
+    from app.models.ai_analysis import AIAnalysis
+
     cat_counts = db.query(Complaint.category, func.count(Complaint.id)).group_by(Complaint.category).all()
-    by_category = {cat: c for cat, c in cat_counts}
+    by_category = {cat: c for cat, c in cat_counts if cat}
+
+    status_counts = db.query(Complaint.status, func.count(Complaint.id)).group_by(Complaint.status).all()
+    by_status = {s: c for s, c in status_counts if s}
+
+    prio_counts = db.query(PriorityAnalysis.priority_level, func.count(PriorityAnalysis.id)).group_by(PriorityAnalysis.priority_level).all()
+    by_priority = {p: c for p, c in prio_counts if p}
+
+    sev_counts = db.query(SeverityAnalysis.severity_level, func.count(SeverityAnalysis.id)).group_by(SeverityAnalysis.severity_level).all()
+    by_severity = {s: c for s, c in sev_counts if s}
+
+    verif_counts = db.query(AIAnalysis.verification_status, func.count(AIAnalysis.id)).group_by(AIAnalysis.verification_status).all()
+    by_verification = {v: c for v, c in verif_counts if v}
 
     total = db.query(func.count(Complaint.id)).scalar() or 0
     resolved = db.query(func.count(Complaint.id)).filter(Complaint.status.in_([ComplaintStatus.RESOLVED, ComplaintStatus.CLOSED])).scalar() or 0
-    resolution_rate = round((resolved / total * 100.0), 1) if total > 0 else 0.0
+    resolution_rate = round((resolved / total), 3) if total > 0 else 0.0
+
+    avg_sev = db.query(func.avg(SeverityAnalysis.severity_score)).scalar()
+    avg_prio = db.query(func.avg(PriorityAnalysis.priority_score)).scalar()
 
     return AnalyticsData(
         complaints_over_time=[],
         category_distribution=by_category,
         resolution_rate=resolution_rate,
+        total_complaints=total,
+        avg_severity_score=round(float(avg_sev), 1) if avg_sev is not None else None,
+        avg_priority_score=round(float(avg_prio), 1) if avg_prio is not None else None,
+        by_category=by_category,
+        by_priority=by_priority,
+        by_severity=by_severity,
+        by_verification=by_verification,
+        by_status=by_status,
     )
 
 
@@ -74,10 +100,12 @@ def get_hotspots(db: Session) -> list[HotspotData]:
     )
     return [
         HotspotData(
-            latitude=lat,
-            longitude=lon,
+            latitude=float(lat),
+            longitude=float(lon),
+            count=1,
+            category=cat or "general",
             complaint_count=1,
-            top_category=cat,
+            top_category=cat or "general",
         )
         for lat, lon, cat in coords
     ]

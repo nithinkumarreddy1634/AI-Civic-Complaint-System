@@ -7,7 +7,7 @@ from app.ai.department.config import DepartmentConfig
 
 def seed_db(db: Session):
     """Seed administrator account and departments with category mappings."""
-    # 1. Seed Admin
+    # 1. Seed Admin and Citizen users
     admin = db.query(User).filter(User.email == 'admin@civicai.com').first()
     if not admin:
         admin = User(
@@ -18,6 +18,17 @@ def seed_db(db: Session):
             is_active=True,
         )
         db.add(admin)
+
+    citizen = db.query(User).filter(User.email == 'citizen@example.com').first()
+    if not citizen:
+        citizen = User(
+            name='Jane Citizen',
+            email='citizen@example.com',
+            password_hash=hash_password('password123'),
+            role='citizen',
+            is_active=True,
+        )
+        db.add(citizen)
 
     # 2. Seed Departments from DepartmentConfig
     config = DepartmentConfig.load()

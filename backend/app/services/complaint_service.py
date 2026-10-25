@@ -206,6 +206,7 @@ def get_admin_complaints(
     sort_by: str = "created_desc",
     page: int = 1,
     limit: int = 20,
+    search: Optional[str] = None,
 ) -> Tuple[List[Dict[str, Any]], int]:
     """Admin query with multi-criteria filtering, multi-model sorting, and pagination."""
     query = (
@@ -234,6 +235,13 @@ def get_admin_complaints(
         query = query.filter(Complaint.created_at >= date_from)
     if date_to:
         query = query.filter(Complaint.created_at <= date_to)
+    if search:
+        search_term = f"%{search}%"
+        query = query.filter(
+            Complaint.description.ilike(search_term)
+            | Complaint.category.ilike(search_term)
+            | Complaint.address.ilike(search_term)
+        )
 
     total = query.count()
 

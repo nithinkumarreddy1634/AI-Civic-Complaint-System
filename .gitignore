@@ -25,7 +25,7 @@ ENV/
 env.bak/
 venv.bak/
 
-# Environment Variables
+# Environment Variables — NEVER commit real .env
 .env
 .env.local
 .env.*.local
@@ -46,8 +46,9 @@ yarn-debug.log
 Thumbs.db
 desktop.ini
 
-# Project-specific
-uploads/
+# Project-specific — exclude large binary/data files
+uploads/*
+!uploads/.gitkeep
 *.pt
 ml/models/*.pt
 ml/datasets/
@@ -59,3 +60,11 @@ ml/datasets/
 
 # Logs
 *.log
+
+# Vercel
+.vercel
+frontend/dist
+
+# pytest
+.pytest_cache/
+__pycache__/

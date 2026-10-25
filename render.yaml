@@ -1,26 +1,41 @@
 services:
   - type: web
     name: civic-ai-backend
-    env: python
+    runtime: python
     region: oregon
     plan: free
     branch: main
-    buildCommand: "pip install -r backend/requirements.txt"
-    startCommand: "cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.9
       - key: APP_NAME
-        value: "CivicAI Backend"
+        value: CivicAI
       - key: DEBUG
         value: "false"
-      - key: ALLOWED_ORIGINS
-        value: "https://frontend-peach-xi-itkvvf8uyv.vercel.app,http://localhost:5173"
       - key: DATABASE_URL
-        value: "sqlite:///./civicai.db"
-      - key: SECRET_KEY
-        generateValue: true
+        value: sqlite:///./civicai.db
       - key: JWT_SECRET_KEY
         generateValue: true
+      - key: JWT_ALGORITHM
+        value: HS256
+      - key: JWT_ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "1440"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: UPLOAD_DIR
+        value: ./uploads
+      - key: MAX_FILE_SIZE_MB
+        value: "10"
+      - key: ALLOWED_EXTENSIONS
+        value: jpg,jpeg,png,webp
+      - key: AI_MODEL_PATH
+        value: ./ml/models/best.pt
+      - key: AI_CONFIDENCE_THRESHOLD
+        value: "0.5"
+      - key: ALLOWED_ORIGINS
+        value: https://civic-ai-frontend.vercel.app,http://localhost:5173
       - key: GOOGLE_API_KEY
         sync: false

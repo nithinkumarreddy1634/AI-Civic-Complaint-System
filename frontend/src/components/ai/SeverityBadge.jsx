@@ -3,18 +3,26 @@ import { getSeverityColor } from '../../utils/helpers';
 import { SEVERITY_LEVELS } from '../../utils/constants';
 
 const SeverityBadge = ({ level, score }) => {
-  if (!level) return null;
+  let rawLevel = level;
+  let rawScore = score;
 
-  const upper = level.toUpperCase();
+  if (typeof rawLevel === 'object' && rawLevel !== null) {
+    rawScore = rawScore ?? rawLevel.score ?? rawLevel.severity_score;
+    rawLevel = rawLevel.level ?? rawLevel.severity_level;
+  }
+
+  if (!rawLevel || typeof rawLevel !== 'string') return null;
+
+  const upper = rawLevel.toUpperCase();
   const colorClass = getSeverityColor(upper);
-  const label = SEVERITY_LEVELS[upper]?.label || level;
+  const label = SEVERITY_LEVELS[upper]?.label || rawLevel;
 
   return (
     <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold border ${colorClass}`}>
       {label}
-      {score !== undefined && score !== null && (
+      {rawScore !== undefined && rawScore !== null && (
         <span className="opacity-75 border-l border-current pl-1.5 ml-0.5 font-mono">
-          {typeof score === 'number' ? score.toFixed(0) : score}
+          {typeof rawScore === 'number' ? rawScore.toFixed(0) : String(rawScore)}
         </span>
       )}
     </span>

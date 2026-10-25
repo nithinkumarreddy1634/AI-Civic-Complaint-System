@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { UploadCloud, X } from 'lucide-react';
 import { validateImage } from '../../utils/validators';
 
@@ -6,6 +6,18 @@ const ImageUpload = ({ onImageSelect, currentImage }) => {
   const [preview, setPreview] = useState(null);
   const [error, setError] = useState('');
   const [isDragging, setIsDragging] = useState(false);
+
+  useEffect(() => {
+    if (!currentImage) {
+      setPreview(null);
+    } else if (typeof currentImage === 'string') {
+      setPreview(currentImage);
+    } else if (currentImage instanceof File || currentImage instanceof Blob) {
+      const objectUrl = URL.createObjectURL(currentImage);
+      setPreview(objectUrl);
+      return () => URL.revokeObjectURL(objectUrl);
+    }
+  }, [currentImage]);
 
   const handleFile = (file) => {
     setError('');

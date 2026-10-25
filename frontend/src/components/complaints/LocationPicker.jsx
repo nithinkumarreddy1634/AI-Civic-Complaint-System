@@ -30,9 +30,13 @@ const LocationMarker = ({ position, setPosition, onLocationSelect }) => {
 const MapRecenter = ({ position }) => {
   const map = useMap();
   useEffect(() => {
-    if (position) {
-      map.flyTo([position.lat, position.lng], 15, { duration: 1.2 });
+    const t = setTimeout(() => {
+      map.invalidateSize();
+    }, 150);
+    if (position && position.lat != null && position.lng != null) {
+      map.flyTo([position.lat, position.lng], 15, { duration: 1.0 });
     }
+    return () => clearTimeout(t);
   }, [position, map]);
   return null;
 };
@@ -40,6 +44,12 @@ const MapRecenter = ({ position }) => {
 const LocationPicker = ({ onLocationSelect, initialPosition = null }) => {
   const [position, setPosition] = useState(initialPosition);
   const [locating, setLocating] = useState(false);
+
+  useEffect(() => {
+    if (initialPosition && (initialPosition.lat != null || initialPosition.lng != null)) {
+      setPosition(initialPosition);
+    }
+  }, [initialPosition]);
   // Default center
   const defaultCenter = [12.9716, 77.5946]; // Bangalore civic center default
   const zoom = 12;

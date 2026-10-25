@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import adminService from '../services/adminService';
 import ComplaintTable from '../components/admin/ComplaintTable';
 import ComplaintFilters from '../components/admin/ComplaintFilters';
@@ -7,13 +7,32 @@ import LoadingSpinner from '../components/common/LoadingSpinner';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const AdminComplaintsPage = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  const parseFiltersFromUrl = useCallback(() => {
+    const f = { sort_by: searchParams.get('sort_by') || 'priority_desc' };
+    if (searchParams.get('status')) f.status = searchParams.get('status');
+    if (searchParams.get('category')) f.category = searchParams.get('category');
+    if (searchParams.get('priority_level')) f.priority_level = searchParams.get('priority_level');
+    if (searchParams.get('severity_level')) f.severity_level = searchParams.get('severity_level');
+    if (searchParams.get('verification_status')) f.verification_status = searchParams.get('verification_status');
+    if (searchParams.get('search')) f.search = searchParams.get('search');
+    return f;
+  }, [searchParams]);
+
+  const [filters, setFilters] = useState(parseFiltersFromUrl);
   const [complaints, setComplaints] = useState([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({ sort_by: 'priority_desc' });
   const [page, setPage] = useState(1);
   const limit = 20;
-  const navigate = useNavigate();
+
+  // Sync if URL searchParams change
+  useEffect(() => {
+    setFilters(parseFiltersFromUrl());
+    setPage(1);
+  }, [searchParams, parseFiltersFromUrl]);
 
   const fetchComplaints = useCallback(async () => {
     setLoading(true);
@@ -37,7 +56,12 @@ const AdminComplaintsPage = () => {
 
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
-    setPage(1); // reset to first page when filters change
+    setPage(1);
+    const params = new URLSearchParams();
+    Object.entries(newFilters).forEach(([k, v]) => {
+      if (v) params.set(k, v);
+    });
+    setSearchParams(params, { replace: true });
   };
 
   const totalPages = Math.max(1, Math.ceil(total / limit));

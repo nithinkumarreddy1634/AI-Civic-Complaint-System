@@ -16,6 +16,7 @@ import NotFoundPage from './pages/NotFoundPage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
 import AdminComplaintsPage from './pages/AdminComplaintsPage';
 import AdminComplaintDetailPage from './pages/AdminComplaintDetailPage';
+import AdminSubmitComplaintPage from './pages/AdminSubmitComplaintPage';
 import AdminMapPage from './pages/AdminMapPage';
 import AdminAnalyticsPage from './pages/AdminAnalyticsPage';
 
@@ -69,6 +70,8 @@ function App() {
         >
           <Route index element={<AdminDashboardPage />} />
           <Route path="complaints" element={<AdminComplaintsPage />} />
+          <Route path="complaints/new" element={<AdminSubmitComplaintPage />} />
+          <Route path="submit" element={<Navigate to="/admin/complaints/new" replace />} />
           <Route path="complaints/:id" element={<AdminComplaintDetailPage />} />
           <Route path="map" element={<AdminMapPage />} />
           <Route path="analytics" element={<AdminAnalyticsPage />} />

@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { COMPLAINT_CATEGORIES } from '../../utils/constants';
 import ImageUpload from './ImageUpload';
 import LocationPicker from './LocationPicker';
+import RealExamplePresets from './RealExamplePresets';
 import { validateComplaint } from '../../utils/validators';
 
-const ComplaintForm = ({ onSubmit, isLoading }) => {
+const ComplaintForm = ({ onSubmit, isLoading, showPresets = true }) => {
   const [formData, setFormData] = useState({
     category: '',
     description: '',
@@ -13,6 +14,11 @@ const ComplaintForm = ({ onSubmit, isLoading }) => {
     location: null,
   });
   const [errors, setErrors] = useState({});
+
+  const handlePresetSelect = (presetData) => {
+    setFormData(presetData);
+    setErrors({});
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -59,7 +65,15 @@ const ComplaintForm = ({ onSubmit, isLoading }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 bg-[#111827]/90 p-6 sm:p-8 rounded-2xl shadow-xl border border-slate-800">
+    <div className="space-y-6">
+      {showPresets && (
+        <RealExamplePresets
+          onSelectPreset={handlePresetSelect}
+          currentCategory={formData.category}
+        />
+      )}
+
+      <form onSubmit={handleSubmit} className="space-y-6 bg-[#111827]/90 p-6 sm:p-8 rounded-2xl shadow-xl border border-slate-800">
       <div>
         <label className="block text-sm font-semibold text-slate-200 mb-1.5">
           Complaint Category <span className="text-rose-400">*</span>
@@ -125,7 +139,7 @@ const ComplaintForm = ({ onSubmit, isLoading }) => {
         <label className="block text-sm font-semibold text-slate-200 mb-1.5">
           Pin Location on Map <span className="text-rose-400">*</span>
         </label>
-        <LocationPicker onLocationSelect={handleLocationSelect} />
+        <LocationPicker onLocationSelect={handleLocationSelect} initialPosition={formData.location} />
         {errors.location && <p className="mt-1.5 text-xs text-rose-400">{errors.location}</p>}
       </div>
 
@@ -146,6 +160,7 @@ const ComplaintForm = ({ onSubmit, isLoading }) => {
         </button>
       </div>
     </form>
+    </div>
   );
 };
 

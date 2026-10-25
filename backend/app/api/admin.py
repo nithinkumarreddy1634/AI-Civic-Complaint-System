@@ -48,7 +48,8 @@ def get_all_complaints(
     date_to: Optional[datetime] = Query(None, description="Created to timestamp"),
     sort_by: str = Query("created_desc", description="Sorting: priority_desc, priority_asc, severity_desc, created_desc, created_asc"),
     page: int = Query(1, ge=1),
-    limit: int = Query(20, ge=1, le=100),
+    limit: int = Query(20, ge=1, le=500),
+    search: Optional[str] = Query(None, description="Search query matching description, category, or address"),
     db: Session = Depends(get_db),
     admin: User = Depends(get_current_admin),
 ):
@@ -66,6 +67,7 @@ def get_all_complaints(
         sort_by=sort_by,
         page=page,
         limit=limit,
+        search=search,
     )
     return {
         "items": complaints,

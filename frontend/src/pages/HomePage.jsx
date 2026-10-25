@@ -4,7 +4,7 @@ import { Camera, Brain, Zap, CheckCircle2, Shield, ArrowRight, Eye, Layers, Comp
 import useAuth from '../hooks/useAuth';
 
 const HomePage = () => {
-  const { user, isCitizen, isAdmin } = useAuth();
+  const { user, isCitizen, isAdmin, switchRole } = useAuth();
 
   return (
     <div className="flex flex-col gap-16 pb-12">
@@ -46,6 +46,11 @@ const HomePage = () => {
             </Link>
             <Link
               to="/admin"
+              onClick={() => {
+                if (!isAdmin) {
+                  switchRole('admin');
+                }
+              }}
               className="w-full sm:w-auto px-7 py-3.5 bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 font-semibold rounded-xl transition text-sm flex items-center justify-center gap-2"
             >
               <span>Admin Console</span>

@@ -126,7 +126,7 @@ def get_user_complaints(
     page: int = 1,
     limit: int = 20,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user_or_default),
+    current_user: User = Depends(get_current_user),
 ):
     """List the current citizen's own complaints with optional filtering."""
     return complaint_service.get_user_complaints(
@@ -138,15 +138,18 @@ def get_user_complaints(
 def get_complaint(
     complaint_id: uuid.UUID,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user_or_default),
+    current_user: User = Depends(get_current_user),
 ):
     """
     Get full complaint detail including all AI analysis results.
-    Allows citizens and tracking of complaints via reference ID.
+    Allows citizens and admins to view complaint details.
     """
     complaint = complaint_service.get_complaint(db, complaint_id)
     if not complaint:
         raise HTTPException(status_code=404, detail="Complaint not found")
+
+    if current_user.role != "admin" and complaint.user_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized to access this complaint")
 
     is_admin = current_user.role == "admin"
     return complaint_service.build_complaint_dict(complaint, db, is_admin=is_admin)

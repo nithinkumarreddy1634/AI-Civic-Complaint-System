@@ -53,6 +53,11 @@ const Navbar = () => {
 
             <Link
               to="/admin"
+              onClick={() => {
+                if (activeRole !== 'admin') {
+                  switchRole('admin');
+                }
+              }}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-600/20 text-purple-300 border border-purple-500/30 hover:bg-purple-600/30 font-medium transition-colors"
             >
               <LayoutDashboard size={15} />

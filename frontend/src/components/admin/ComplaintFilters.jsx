@@ -85,6 +85,25 @@ const ComplaintFilters = ({ filters, onFilterChange }) => {
           </select>
         </div>
 
+        {/* Active Search Badge */}
+        {filters.search && (
+          <div className="flex items-center gap-1.5 px-3 py-2 bg-blue-50 border border-blue-200 text-blue-700 rounded-lg text-xs font-medium">
+            <span>Search: <strong>"{filters.search}"</strong></span>
+            <button
+              type="button"
+              onClick={() => {
+                const updated = { ...filters };
+                delete updated.search;
+                onFilterChange(updated);
+              }}
+              className="hover:text-blue-900 ml-1 p-0.5 rounded hover:bg-blue-100"
+              title="Clear search query"
+            >
+              <X size={13} />
+            </button>
+          </div>
+        )}
+
         {/* Clear */}
         {hasFilters && (
           <button

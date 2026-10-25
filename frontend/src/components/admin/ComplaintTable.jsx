@@ -67,14 +67,20 @@ const ComplaintTable = ({ complaints = [], onRowClick }) => {
                   </td>
 
                   <td className="px-4 py-3 whitespace-nowrap">
-                    {(complaint.priority_level || complaint.priority?.level)
-                      ? <PriorityBadge level={complaint.priority_level || complaint.priority?.level} score={complaint.priority?.score} />
+                    {(complaint.priority_level || complaint.priority?.priority_level || complaint.priority?.level || (typeof complaint.priority === 'string' ? complaint.priority : null))
+                      ? <PriorityBadge
+                          level={complaint.priority_level || complaint.priority?.priority_level || complaint.priority?.level || complaint.priority}
+                          score={complaint.priority?.priority_score ?? complaint.priority?.score}
+                        />
                       : <span className="text-slate-300 text-xs">—</span>}
                   </td>
 
                   <td className="px-4 py-3 whitespace-nowrap">
-                    {(complaint.severity?.level)
-                      ? <SeverityBadge level={complaint.severity.level} score={complaint.severity.score} />
+                    {(complaint.severity_level || complaint.severity?.severity_level || complaint.severity?.level || (typeof complaint.severity === 'string' ? complaint.severity : null))
+                      ? <SeverityBadge
+                          level={complaint.severity_level || complaint.severity?.severity_level || complaint.severity?.level || complaint.severity}
+                          score={complaint.severity?.severity_score ?? complaint.severity?.score}
+                        />
                       : <span className="text-slate-300 text-xs">—</span>}
                   </td>
 

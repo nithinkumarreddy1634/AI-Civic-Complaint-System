@@ -39,14 +39,14 @@ const AdminLayout = () => {
 
   const mainNavItems = [
     { name: 'Dashboard', path: '/admin', icon: LayoutDashboard },
-    { name: 'Submit Complaint', path: '/complaints/new', icon: PlusCircle },
+    { name: 'Submit Complaint', path: '/admin/complaints/new', icon: PlusCircle },
     { name: 'All Complaints', path: '/admin/complaints', icon: AlertCircle },
     { name: 'Incident Map', path: '/admin/map', icon: MapPin },
     { name: 'Analytics', path: '/admin/analytics', icon: BarChart3 },
   ];
 
   const adminNavItems = [
-    { name: 'Assignments', path: '/admin/complaints?filter=assigned', icon: Layers },
+    { name: 'Assignments', path: '/admin/complaints?status=ASSIGNED', icon: Layers },
     { name: 'Departments', path: '/admin/analytics#departments', icon: Building2 },
     { name: 'User Management', path: '/admin/complaints', icon: Users },
     { name: 'Audit Reports', path: '/admin/analytics', icon: FileText },
