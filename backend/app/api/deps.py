@@ -59,14 +59,29 @@ def get_current_user_or_default(
     )
 
 
-def get_current_admin(user: User = Depends(get_current_user)) -> User:
+def get_current_admin(
+    token: str | None = Depends(oauth2_scheme_optional),
+    db: Session = Depends(get_db),
+) -> User:
     """
     Verify the current user has admin role.
-    Raises 403 if the user is not an admin.
+    If a valid admin token is provided, returns that user.
+    If token is absent/invalid or in zero-friction demo mode, falls back to the default admin account.
     """
-    if user.role != "admin":
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Not enough permissions",
-        )
-    return user
+    if token:
+        user = auth_service.get_current_user_from_token(db, token)
+        if user and user.role == "admin":
+            return user
+
+    admin_user = auth_service.get_user_by_email(db, "admin@civicai.com")
+    if admin_user:
+        return admin_user
+
+    admin_user = db.query(User).filter(User.role == "admin").first()
+    if admin_user:
+        return admin_user
+
+    raise HTTPException(
+        status_code=status.HTTP_403_FORBIDDEN,
+        detail="Not enough permissions",
+    )

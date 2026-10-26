@@ -51,18 +51,14 @@ const Navbar = () => {
               My Complaints
             </Link>
 
-            <Link
-              to="/admin"
-              onClick={() => {
-                if (activeRole !== 'admin') {
-                  switchRole('admin');
-                }
-              }}
+            <button
+              type="button"
+              onClick={() => handleRoleToggle('admin')}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-600/20 text-purple-300 border border-purple-500/30 hover:bg-purple-600/30 font-medium transition-colors"
             >
               <LayoutDashboard size={15} />
               <span>Admin Console</span>
-            </Link>
+            </button>
 
             {/* Seamless Role Switcher (Zero Auth Page) */}
             <div className="flex items-center gap-2 pl-3 border-l border-slate-800">
